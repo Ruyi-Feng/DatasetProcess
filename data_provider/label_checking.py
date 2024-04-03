@@ -6,8 +6,9 @@ from data_provider.data_fomat_driver import DataConvert
 from data_provider.utils import select_error_samples
 from data_provider.utils import del_error_samples as del_errs
 from data_provider.utils import sampling_refer_balenced_log as sampling
-from data_provider.utils import load_json, save_json, save_top_pool, load_top_pool
+from data_provider.utils import load_json, save_json, save_top_pool, load_top_pool, labels2img
 import json
+import warnings
 
 
 class Checker:
@@ -86,10 +87,10 @@ class Checker:
         """
         检查文件夹中需要check label的目标个数
         """
-        self.img_list = os.listdir(os.path.join(self.check_dir, "images"))
+        img_list = os.listdir(os.path.join(self.check_dir, "images"))
         self.label_list = os.listdir(os.path.join(self.check_dir, "labels"))
-        if len(self.img_list) != len(self.label_list):
-            raise ValueError("图片和标签数量不一致")
+        if len(img_list) != len(self.label_list):
+            warnings.warn("图片和标签数量不一致")
         self.sample_number = len(self.label_list)
         print("finish count sample number")
 
@@ -122,8 +123,8 @@ class Checker:
         print("each class percentage: ", self.class_percentage)
 
     def _load_one_img_with_label(self, index):
-        img_path = os.path.join(self.check_dir, "images", self.img_list[index])
         label_path = os.path.join(self.check_dir, "labels", self.label_list[index])
+        img_path = labels2img(label_path)
         img = cv2.imread(img_path)
         fc, fr = img.shape[1], img.shape[0]
         labels = self.data_convert.load(label_path, fc, fr)
@@ -178,7 +179,7 @@ class Checker:
                 (y // self.img_rows_pixel) * self.cols + (x // self.img_cols_pixel) + i
             )
             self.error_label.append(self.label_list(index))
-            self.error_images.append(self.img_list(index))
+            self.error_images.append(labels2img(self.label_list(index)))
 
     def check_samples(
         self, if_random=True, rows=3, cols=3, save_path="check_result.json"
