@@ -112,3 +112,40 @@ def load_top_pool(path):
                 v[label][i] = float(v[label][i])
             v[label] = np.array(v[label])
     return top_pool
+
+def del_files_ext(paths):
+    names = []
+    for i in paths:
+        i = i.replace(".jpg", "")
+        i = i.replace(".png", "")
+        i = i.replace(".txt", "")
+        names.append(i)
+    return names
+
+def del_extra_file(path, del_names, del_ext=[".jpg", ".png", ".txt"]):
+    for name in del_names:
+        ext = ""
+        for e in del_ext:
+            if os.path.exists(os.path.join(path, name + e)):
+                ext = e
+                _del_samples(path, name + ext)
+                break
+
+def equal_img_labels(dir_path):
+    """for del samples without labels or images
+
+    Args:
+        dir_path (str): The path of dataset including sub dirs of images and labels
+    """
+    img_path = os.path.join(dir_path, "images")
+    img_list = os.listdir(img_path)
+    label_path = os.path.join(dir_path, "labels")
+    label_list = os.listdir(label_path)
+    if len(img_list) != len(label_list):
+        im_name = del_files_ext(img_list)
+        lb_name = del_files_ext(label_list)
+        names = set(im_name) & set(lb_name)
+        print("交集样本数量:", len(names))
+        del_extra_file(img_path, set(im_name) - names)
+        del_extra_file(label_path, set(lb_name) - names)
+
