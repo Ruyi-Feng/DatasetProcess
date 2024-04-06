@@ -131,11 +131,12 @@ class Checker:
         labels = self.data_convert.load(label_path, fc, fr)
         for label in labels:
             cv2.rectangle(
-                img, (label[1], label[2]), (label[3], label[4]), (0, 255, 0), 2
+                img, (label[1], label[2]), (label[3], label[4]), (0, 255, 0), 4
             )
+            img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
             cv2.putText(
                 img,
-                label[0],
+                "%s"%label[0],
                 (label[1], label[2] - 5),
                 cv2.FONT_HERSHEY_SIMPLEX,
                 1,
@@ -183,7 +184,7 @@ class Checker:
             self.error_images.append(labels2img(self.label_list(index)))
 
     def check_samples(
-        self, if_random=True, rows=3, cols=3, save_path="check_result.json"
+        self, if_random=True, rows=3, cols=3, save_path="check_result.json", col_pix=1080, row_pix=720
     ):
         """
         用于检查数据集是否符合要求
@@ -192,8 +193,8 @@ class Checker:
         """
         self.rows = rows
         self.cols = cols
-        self.img_cols_pixel = 1080 // cols
-        self.img_rows_pixel = 720 // rows
+        self.img_cols_pixel = col_pix // cols
+        self.img_rows_pixel = row_pix // rows
         if len(self.rand_index) == 0:
             self.rand_index = list(range(self.sample_number))
             if if_random:
