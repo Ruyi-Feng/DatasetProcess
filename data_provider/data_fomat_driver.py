@@ -95,3 +95,44 @@ class DataConvert:
                         label[0], label[1], label[2], label[3], label[4]
                     )
                 )
+
+    @staticmethod
+    def load_yolo(path):
+        labels = []
+        with open(path) as f:
+            lines = f.readlines()
+            for line in lines:
+                obj_class = int(float(line.split()[0]))
+                obj_x = float(line.split()[1])
+                obj_y = float(line.split()[2])
+                obj_w = float(line.split()[3])
+                obj_h = float(line.split()[4])
+                labels.append([obj_class, obj_x, obj_y, obj_w, obj_h])
+        return labels
+
+    @staticmethod
+    def replace_cls(labels, ori_cls, new_cls):
+        for i in range(len(labels)):
+            if labels[i][0] == ori_cls:
+                labels[i][0] = new_cls
+        return labels
+
+    @staticmethod
+    def freash_yolo_labels(path, labels):
+        with open(path, "w") as f:
+            for label in labels:
+                f.write(
+                    "{} {} {} {} {}\n".format(
+                        label[0], label[1], label[2], label[3], label[4]
+                    )
+                )
+
+    @classmethod
+    def change_label_cls(self, labels_path, ori_cls, new_cls):
+        label_list = os.listdir(labels_path)
+        for label in label_list:
+            label_path = os.path.join(labels_path, label)
+            labels = self.load_yolo(label_path)
+            labels = self.replace_cls(labels, ori_cls, new_cls)
+            self.freash_yolo_labels(label_path, labels)
+        print("done")
