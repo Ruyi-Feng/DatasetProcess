@@ -1,6 +1,7 @@
 
 from data_provider.label_checking import Checker, Balencer
 from data_provider.utils import equal_img_labels
+from data_provider.data_fomat_driver import DataConvert
 
 def test_checker():
     checker = Checker(dir="J:\\yolov5projdataset\\roadside", fmt="yolo2xyxy", if_check_inside_obj=True)
@@ -14,3 +15,6 @@ def test_balencer():
 
 def test_euqal_img_labels():
     equal_img_labels("J:\\yolov5projdataset\\roadside")
+
+def test_change_label_cls():
+    DataConvert.change_label_cls(labels_path="", ori_cls=0, new_cls=1)
