@@ -38,7 +38,7 @@ class Checker:
         """
         print("init checker")
         self.data_convert = DataConvert(fmt)
-        if json_path is not None:
+        if json_path is not None and os.path.exists(json_path):
             half_work_json = load_json(json_path)
             self.start_i = half_work_json["start_i"]
             self.check_dir = half_work_json["check_dir"]
@@ -52,7 +52,7 @@ class Checker:
             self._count_obj_number()
         else:
             if dir is None:
-                raise ValueError("dir is None")
+                raise ValueError("json path not exist, and dir is None")
             self.check_dir = dir
             self.start_i = 0
             self.obj_class_count = {}
@@ -327,14 +327,14 @@ class Balencer(Checker):
             return current_cls
 
     def _get_current_offset(self):
-        return self.sampled_class_num.max() - self.sampled_class_num.min()
+        return (self.sampled_class_num.max() - self.sampled_class_num.min()) / self.sampled_class_num.sum()
 
     def _should_further_sampling(self, tolerant_offset, supposed_sampled_num):
-        if self._get_current_offset() < tolerant_offset:
-            if self.sampled_class_num.sum() >= supposed_sampled_num:
-                return False
-            else:
-                return True
+        # if self._get_current_offset() < tolerant_offset:
+        if self.sampled_class_num.sum() >= supposed_sampled_num:
+            return False
+        else:
+            return True
 
     def _further_sample(
         self, supposed_sampled_num, tolerant_offset=0.1, sampled_batch=10
@@ -394,7 +394,7 @@ class Balencer(Checker):
                 print(
                     "[Sample Num] can't meet the expect sample num, please check the dataset"
                 )
-                print("current sampled num: ", self.sampled_class_num.sum())
+                print("current sampled obj num: ", self.sampled_class_num.sum())
             if not offset_meet:
                 print("===============Warning=================")
                 print("[Offset] can't meet the expect offset, please check the dataset")
@@ -403,6 +403,6 @@ class Balencer(Checker):
         save_json(self.samped_dataset, balenced_log_save_path)
 
     def sampling_refer_balenced_log(
-        self, balencer_log_path, save_dir, img_ext=".jpg", label_ext=".txt"
+        self, balencer_log_path, save_dir, img_exts=[".jpg", ".png"], label_ext=".txt"
     ):
-        sampling(balencer_log_path, save_dir, img_ext, label_ext)
+        sampling(balencer_log_path, self.check_dir, save_dir, img_exts, label_ext)
