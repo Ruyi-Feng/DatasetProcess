@@ -85,15 +85,20 @@ def sampling_refer_balenced_log(
                 )
 
 
-def img2labels(img_path, img_ext=".jpg", label_ext=".txt"):
-    label_path = img_path.replace(img_ext, label_ext)
+def img2labels(img_path, label_ext=".txt", img_exts=[".jpg", ".png", ".txt"]):
+    for ext in img_exts:
+        label_path = img_path.replace(ext, label_ext)
     label_path = label_path.replace("images", "labels")
     return label_path
 
 
-def labels2img(label_path, img_ext=".jpg", label_ext=".txt"):
-    img_path = label_path.replace(label_ext, img_ext)
-    img_path = img_path.replace("labels", "images")
+def labels2img(label_path, label_ext=".txt", img_exts=[".jpg", ".png", ".txt"]):
+    img_path = label_path.replace("labels", "images")
+    for ext in img_exts:
+        tmp = img_path.replace(label_ext, ext)
+        if os.path.exists(tmp):
+            img_path = tmp
+            break
     return img_path
 
 
