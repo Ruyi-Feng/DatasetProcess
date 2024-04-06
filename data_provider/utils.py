@@ -13,7 +13,7 @@ def click_figure(event, x, y, flags, param):
 def select_error_samples(imori):
     global points
     points = []
-    cv2.namedWindow("select_error_figures", cv2.WINDOW_NORMAL)
+    cv2.namedWindow("select_error_figures", cv2.WINDOW_AUTOSIZE)
     while 1:
         cv2.setMouseCallback("select_error_figures", click_figure)
         Key = cv2.waitKey(10)
@@ -58,8 +58,8 @@ def del_error_samples(checker_log_path):
     label_dir = os.path.join(dataset_dir, "labels")
     for name in checker_log["error_label"]:
         _del_samples(label_dir, name)
-    for name in checker_log["error_img"]:
-        _del_samples(img_dir, name)
+        img_nm = labels2img(os.path.join(img_dir, name))
+        _del_samples('', img_nm)
 
 
 def sampling_refer_balenced_log(

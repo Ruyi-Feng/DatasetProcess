@@ -133,7 +133,6 @@ class Checker:
             cv2.rectangle(
                 img, (label[1], label[2]), (label[3], label[4]), (0, 255, 0), 4
             )
-            img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
             cv2.putText(
                 img,
                 "%s"%label[0],
@@ -180,8 +179,8 @@ class Checker:
             index = (
                 (y // self.img_rows_pixel) * self.cols + (x // self.img_cols_pixel) + i
             )
-            self.error_label.append(self.label_list(index))
-            self.error_images.append(labels2img(self.label_list(index)))
+            self.error_label.append(self.label_list[index])
+            self.error_images.append(labels2img(self.label_list[index]))
 
     def check_samples(
         self, if_random=True, rows=3, cols=3, save_path="check_result.json", col_pix=1080, row_pix=720
