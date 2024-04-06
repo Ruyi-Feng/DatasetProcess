@@ -110,13 +110,16 @@ def save_top_pool(top_pool, path):
 
 
 def load_top_pool(path):
+    top_pool_num = {}
     top_pool = load_json(path)
     for k, v in top_pool.items():
+        k_num = int(k)
         for label in v:
             for i in range(len(v[label])):
                 v[label][i] = float(v[label][i])
             v[label] = np.array(v[label])
-    return top_pool
+        top_pool_num[k_num] = v
+    return top_pool_num
 
 def del_files_ext(paths):
     names = []
