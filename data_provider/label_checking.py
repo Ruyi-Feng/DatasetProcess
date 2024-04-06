@@ -64,6 +64,7 @@ class Checker:
             if if_check_inside_obj:
                 print("start checking inside obj")
                 _ = self.count_class_number()
+                print("start generate statistic class result")
                 self.generate_statistics_class_result()
                 self._update_json("check_result.json", 0)
 
