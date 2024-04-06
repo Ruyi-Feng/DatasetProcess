@@ -59,14 +59,17 @@ def del_error_samples(checker_log_path):
     for name in checker_log["error_label"]:
         _del_samples(label_dir, name)
         img_nm = labels2img(os.path.join(img_dir, name))
-        _del_samples('', img_nm)
+        _del_samples("", img_nm)
 
 
 def sampling_refer_balenced_log(
-    balencer_log_path, save_dir, img_ext=".jpg", label_ext=".txt"
+    balencer_log_path,
+    dataset_dir,
+    save_dir,
+    img_exts=[".jpg", ".png"],
+    label_ext=".txt",
 ):
     balencer_log = load_json(balencer_log_path)
-    dataset_dir = balencer_log["check_dir"]
     img_dir = os.path.join(dataset_dir, "images")
     label_dir = os.path.join(dataset_dir, "labels")
     if not os.path.exists(os.path.join(save_dir, "images")):
@@ -74,16 +77,21 @@ def sampling_refer_balenced_log(
     save_dir = os.path.join(save_dir, "labels")
     if not os.path.exists(save_dir):
         os.makedirs(save_dir)
-    for k, lists in balencer_log:
-        for name in lists:
-            if os.path.exists(os.path.join(label_dir, name)):
-                os.replace(os.path.join(label_dir, name), os.path.join(save_dir, name))
-            img_nm = name.replace(label_ext, img_ext)
-            if os.path.exists(os.path.join(img_dir, img_nm)):
-                os.replace(
-                    os.path.join(img_dir, img_nm), os.path.join(save_dir, img_nm)
-                )
-
+    for k, lists in balencer_log.items():
+        for name, times in lists.items():
+            for i in range(times):
+                # 这里仍然有bug，重复采样没有达成。
+                if os.path.exists(os.path.join(label_dir, name)):
+                    os.replace(
+                        os.path.join(label_dir, name), os.path.join(save_dir, str(i) + name)
+                    )
+                for ext in img_exts:
+                    img_nm = name.replace(label_ext, ext)
+                    if os.path.exists(os.path.join(img_dir, img_nm)):
+                        os.replace(
+                            os.path.join(img_dir, img_nm),
+                            labels2img(os.path.join(save_dir, str(i) + img_nm)),
+                        )
 
 def img2labels(img_path, label_ext=".txt", img_exts=[".jpg", ".png", ".txt"]):
     for ext in img_exts:
@@ -121,6 +129,7 @@ def load_top_pool(path):
         top_pool_num[k_num] = v
     return top_pool_num
 
+
 def del_files_ext(paths):
     names = []
     for i in paths:
@@ -130,6 +139,7 @@ def del_files_ext(paths):
         names.append(i)
     return names
 
+
 def del_extra_file(path, del_names, del_ext=[".jpg", ".png", ".txt"]):
     for name in del_names:
         ext = ""
@@ -138,6 +148,7 @@ def del_extra_file(path, del_names, del_ext=[".jpg", ".png", ".txt"]):
                 ext = e
                 _del_samples(path, name + ext)
                 break
+
 
 def equal_img_labels(dir_path):
     """for del samples without labels or images
@@ -156,4 +167,3 @@ def equal_img_labels(dir_path):
         print("交集样本数量:", len(names))
         del_extra_file(img_path, set(im_name) - names)
         del_extra_file(label_path, set(lb_name) - names)
-
