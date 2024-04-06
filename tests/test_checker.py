@@ -4,8 +4,8 @@ from data_provider.utils import equal_img_labels
 from data_provider.data_fomat_driver import DataConvert
 
 def test_checker():
-    checker = Checker(dir="J:\\yolov5projdataset\\roadside", fmt="yolo2xyxy", if_check_inside_obj=True,
-                      json_path="check_result.json"
+    checker = Checker(dir="J:\\yolov5projdataset\\afterbalence", fmt="yolo2xyxy", if_check_inside_obj=True,
+                    #   json_path="check_result.json"
                       )
     sample_num = checker.get_sample_number()
     print("sample_num: ", sample_num)
