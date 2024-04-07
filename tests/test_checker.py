@@ -1,6 +1,6 @@
 
 from data_provider.label_checking import Checker, Balencer
-from data_provider.utils import equal_img_labels
+from data_provider.utils import equal_img_labels, train_val_split
 from data_provider.data_fomat_driver import DataConvert
 
 def test_checker(path):
@@ -27,4 +27,11 @@ def test_change_label_cls():
     DataConvert.change_label_cls(labels_path="J:\\yolov5projdataset\\Yolo Truck.v2i.yolov5pytorch\\train\\labels",
                                  ori_cls=1,
                                  new_cls=3)
+
+def test_train_val_split():
+    train_val_split(ori_path="E:\\yolov5projdataset\\afterbalence",
+                    new_path="E:\\yolov5projdataset\\split_dataset",
+                    train_ratio=0.7,
+                    val_ratio=0.2,
+                    test_ratio=0.1)
 

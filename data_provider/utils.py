@@ -2,6 +2,8 @@ import cv2
 import json
 import numpy as np
 import os
+import random
+import shutil
 
 
 def click_figure(event, x, y, flags, param):
@@ -95,15 +97,13 @@ def sampling_refer_balenced_log(
 
 def img2labels(img_path, label_ext=".txt", img_exts=[".jpg", ".png"]):
     label_path = img_path.replace("images", "labels")
-    for ext in img_exts:
-        label_path = label_path.replace(ext, label_ext)
+    label_path = label_path[:-4] + ".txt"
     return label_path
-
 
 def labels2img(label_path, label_ext=".txt", img_exts=[".jpg", ".png"]):
     img_path = label_path.replace("labels", "images")
     for ext in img_exts:
-        tmp = img_path.replace(label_ext, ext)
+        tmp = label_path[:-4] + ext
         if os.path.exists(tmp):
             img_path = tmp
             break
@@ -142,11 +142,9 @@ def del_files_ext(paths):
 
 def del_extra_file(path, del_names, del_ext=[".jpg", ".png", ".txt"]):
     for name in del_names:
-        ext = ""
         for e in del_ext:
             if os.path.exists(os.path.join(path, name + e)):
-                ext = e
-                _del_samples(path, name + ext)
+                _del_samples(path, name + e)
                 break
 
 
@@ -167,3 +165,57 @@ def equal_img_labels(dir_path):
         print("交集样本数量:", len(names))
         del_extra_file(img_path, set(im_name) - names)
         del_extra_file(label_path, set(lb_name) - names)
+
+def _copy(ori_file, cur_file):
+    if os.path.exists(ori_file):
+        shutil.copy(ori_file, cur_file)
+
+def copy_to_dir(ori, new, name_list, label_copy, img_copy):
+    for name in name_list:
+        if img_copy:
+            orifile = os.path.join(ori, "images", name)
+            newfile = os.path.join(new, "images", name)
+            _copy(orifile, newfile)
+        if label_copy:
+            orifile = img2labels(os.path.join(ori, "images", name))
+            newfile = img2labels(os.path.join(new, "images", name))
+            _copy(orifile, newfile)
+
+def _split(ori_path, new_path, train_list, val_list, test_list=[]):
+    if not os.path.exists(os.path.join(new_path, "train")):
+        os.makedirs(os.path.join(new_path, "train"))
+        os.makedirs(os.path.join(new_path, "train", "images"))
+        os.makedirs(os.path.join(new_path, "train", "labels"))
+    if not os.path.exists(os.path.join(new_path, "val")):
+        os.makedirs(os.path.join(new_path, "val"))
+        os.makedirs(os.path.join(new_path, "val", "images"))
+        os.makedirs(os.path.join(new_path, "val", "labels"))
+    if not os.path.exists(os.path.join(new_path, "test")) and len(test_list):
+        os.makedirs(os.path.join(new_path, "test"))
+        os.makedirs(os.path.join(new_path, "test", "images"))
+        os.makedirs(os.path.join(new_path, "test", "labels"))
+    new_train = os.path.join(new_path, "train")
+    new_val = os.path.join(new_path, "val")
+    copy_to_dir(ori_path, new_train, train_list, True, True)
+    copy_to_dir(ori_path, new_val, val_list, True, True)
+    if len(test_list):
+        copy_to_dir(ori_path, new_val, test_list, True, True)
+    print("done split dataset")
+
+def train_val_split(ori_path, new_path, train_ratio=0.7, val_ratio=0.3, test_ratio=0.0):
+    ori_img_path = os.path.join(ori_path, "images")
+    if not os.path.exists(ori_img_path):
+        raise ValueError("not exist path")
+    label_list = os.listdir(ori_img_path)
+    train_sample = int(len(label_list) * train_ratio)
+    train_list = random.sample(label_list, k=train_sample)
+    extra_list = list(set(label_list) - set(train_list))
+    if test_ratio == 0:
+        val_list = extra_list
+    else:
+        val_sample = int(len(label_list) * val_ratio)
+        val_list = random.sample(extra_list, val_sample)
+        test_list = list(set(extra_list) - set(val_list))
+    if not os.path.exists(new_path):
+        os.makedirs(new_path)
+    _split(ori_path, new_path, train_list, val_list, test_list)
