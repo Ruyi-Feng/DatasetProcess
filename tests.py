@@ -15,12 +15,12 @@ import time
 
 
 if __name__ == "__main__":
-    path = "E:\\yolov5projdataset\\split_dataset\\train"
+    path = "/data1/fry/dealdataset/"
     start_time = time.time()
     test_euqal_img_labels(path)
     # test_train_val_split()
     # test_change_label_cls()
-    # test_checker(path)
+    test_checker(path)
     test_balencer()
     # test_lightchange(path)
     # test_cutchange_exteral_label()
