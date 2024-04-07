@@ -99,15 +99,16 @@ class DataConvert:
     @staticmethod
     def load_yolo(path):
         labels = []
-        with open(path) as f:
-            lines = f.readlines()
-            for line in lines:
-                obj_class = int(float(line.split()[0]))
-                obj_x = float(line.split()[1])
-                obj_y = float(line.split()[2])
-                obj_w = float(line.split()[3])
-                obj_h = float(line.split()[4])
-                labels.append([obj_class, obj_x, obj_y, obj_w, obj_h])
+        if os.path.exists(path):
+            with open(path) as f:
+                lines = f.readlines()
+                for line in lines:
+                    obj_class = int(float(line.split()[0]))
+                    obj_x = float(line.split()[1])
+                    obj_y = float(line.split()[2])
+                    obj_w = float(line.split()[3])
+                    obj_h = float(line.split()[4])
+                    labels.append([obj_class, obj_x, obj_y, obj_w, obj_h])
         return labels
 
     @staticmethod

@@ -4,7 +4,7 @@ import os
 from data_provider.utils import labels2img as labels2img
 from data_provider.data_fomat_driver import DataConvert
 import random
-from data_provider.utils import load_top_pool, save_img
+from data_provider.utils import load_top_pool, save_img, img2labels
 
 
 class ImageCut:
@@ -282,15 +282,15 @@ class ImageLight:
     def _record_dir_info(self):
         if len(os.listdir(self.dir)) == 0:
             raise ValueError("dir is empty")
-        self.total_img_num = len(os.listdir(self.dir))
-        self.img_list = os.listdir(self.dir)
+        self.total_img_num = len(os.listdir(os.path.join(self.dir, "images")))
+        self.img_list = os.listdir(os.path.join(self.dir, "images"))
         self.choosed_index = []
 
     def _get_total_change_num(self):
-        if len(os.listdir(self.dir)) == 0:
+        if len(os.listdir(os.path.join(self.dir, "images"))) == 0:
             raise ValueError("dir is empty")
         self.total_change_num = int(
-            len(os.listdir(self.dir))
+            len(os.listdir(os.path.join(self.dir, "images")))
             * (self.light_change_ratio + self.contrast_change_ratio)
         )
         self.max_alpha = (self._ALPHA_ - 1.0) * self.contrast_th + 1.0
@@ -298,7 +298,7 @@ class ImageLight:
         self.max_beta = self._BETA_ * self.brightness_th
         self.min_beta = -self._BETA_ * self.brightness_th
 
-    def _change_img(self, img, alpha, beta, if_show=True):
+    def _change_img(self, img, alpha, beta, if_show=False):
         new_img = cv2.convertScaleAbs(img, alpha=alpha, beta=beta)
         if if_show:
             src = cv2.resize(new_img, dsize=None, fx=0.3, fy=0.3)
@@ -315,7 +315,9 @@ class ImageLight:
             else:
                 self.choosed_index.append(index)
                 break
-        img_path = os.path.join(self.dir, self.img_list[index])
+        img_path = os.path.join(os.path.join(self.dir, "images"), self.img_list[index])
+        label_path = img2labels(img_path)
+        labels = DataConvert.load_yolo(label_path)
         img = cv2.imread(img_path)
         alpha, beta = 1.0, 0.0
         if_both_changed = random.random() < 0.3
@@ -328,7 +330,7 @@ class ImageLight:
             beta = random.uniform(self.min_beta, self.max_beta)
         img = self._change_img(img, alpha, beta)
         mark = self.img_list[index] + "_alpha%.2f_beta%.2f" % (alpha, beta)
-        return img, mark
+        return img, mark, labels
 
     def run(self, save_path=None):
         if save_path is None:
@@ -336,5 +338,5 @@ class ImageLight:
         if not os.path.exists(save_path):
             os.makedirs(save_path)
         for i in range(self.total_change_num):
-            img, mark = self._create_light_changed_img()
-            save_img(img, os.path.join(save_path, mark + ".jpg"))
+            img, mark, labels = self._create_light_changed_img()
+            DataConvert.save_yolo(save_path, mark, img, labels)
