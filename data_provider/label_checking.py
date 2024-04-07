@@ -271,6 +271,8 @@ class Balencer(Checker):
             lines = self.data_convert.load(
                 os.path.join(self.check_dir, "labels", label), 1, 1
             )
+            if len(lines) == 0:
+                continue
             cls = np.array(lines)[:, 0]
             top_class = self._get_top_class(cls)
             self.top_pool.setdefault(top_class, {})

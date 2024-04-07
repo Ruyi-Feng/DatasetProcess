@@ -17,8 +17,8 @@ def test_balencer():
     balencer = Balencer(dataset_info_json_path="check_result.json", generate_top_pool=True)
     # balencer.load_top_pool()
     balencer.balence(tolerant_offset=0.3,
-                     expect_dataset_scale=0.30,)
-    balencer.sampling_refer_balenced_log("balence_log.json", "E:\\yolov5projdataset\\split_dataset\\trained")
+                     expect_dataset_scale=0.30)
+    balencer.sampling_refer_balenced_log("balence_log.json", "/data1/fry/balenced_combine_dataset/")
 
 def test_euqal_img_labels(path):
     equal_img_labels(path)
