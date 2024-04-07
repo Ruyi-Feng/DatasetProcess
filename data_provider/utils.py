@@ -140,9 +140,7 @@ def del_files_ext(paths):
 def del_extra_file(path, del_names, del_ext=[".jpg", ".png", ".txt"]):
     for name in del_names:
         for e in del_ext:
-            if os.path.exists(os.path.join(path, name + e)):
-                _del_samples(path, name + e)
-                break
+            _del_samples(path, name + e)
 
 
 def equal_img_labels(dir_path):
