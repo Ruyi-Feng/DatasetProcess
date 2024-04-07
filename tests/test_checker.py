@@ -3,8 +3,8 @@ from data_provider.label_checking import Checker, Balencer
 from data_provider.utils import equal_img_labels
 from data_provider.data_fomat_driver import DataConvert
 
-def test_checker():
-    checker = Checker(dir="J:\\yolov5projdataset\\afterbalence", fmt="yolo2xyxy", if_check_inside_obj=True,
+def test_checker(path):
+    checker = Checker(dir=path, fmt="yolo2xyxy", if_check_inside_obj=True,
                     #   json_path="check_result.json"
                       )
     sample_num = checker.get_sample_number()
@@ -20,8 +20,8 @@ def test_balencer():
     #                  expect_dataset_scale=0.30,)
     balencer.sampling_refer_balenced_log("balence_log.json", "J:\\yolov5projdataset\\afterbalence")
 
-def test_euqal_img_labels():
-    equal_img_labels("J:\\yolov5projdataset\\roadside")
+def test_euqal_img_labels(path):
+    equal_img_labels(path)
 
 def test_change_label_cls():
     DataConvert.change_label_cls(labels_path="J:\\yolov5projdataset\\Yolo Truck.v2i.yolov5pytorch\\train\\labels",
