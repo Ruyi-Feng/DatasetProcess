@@ -14,11 +14,11 @@ def test_checker(path):
     # assert sample_num == 19
 
 def test_balencer():
-    balencer = Balencer(dataset_info_json_path="check_result.json", generate_top_pool=False)
+    balencer = Balencer(dataset_info_json_path="check_result.json", generate_top_pool=True)
     # balencer.load_top_pool()
-    # balencer.balence(tolerant_offset=0.3,
-    #                  expect_dataset_scale=0.30,)
-    balencer.sampling_refer_balenced_log("balence_log.json", "J:\\yolov5projdataset\\afterbalence")
+    balencer.balence(tolerant_offset=0.3,
+                     expect_dataset_scale=0.30,)
+    balencer.sampling_refer_balenced_log("balence_log.json", "E:\\yolov5projdataset\\split_dataset\\trained")
 
 def test_euqal_img_labels(path):
     equal_img_labels(path)

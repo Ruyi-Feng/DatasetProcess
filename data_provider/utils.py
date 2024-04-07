@@ -81,19 +81,16 @@ def sampling_refer_balenced_log(
         os.makedirs(save_dir)
     for k, lists in balencer_log.items():
         for name, times in lists.items():
-            for i in range(times):
-                # 这里仍然有bug，重复采样没有达成。
-                if os.path.exists(os.path.join(label_dir, name)):
-                    os.replace(
-                        os.path.join(label_dir, name), os.path.join(save_dir, str(i) + name)
-                    )
-                for ext in img_exts:
-                    img_nm = name.replace(label_ext, ext)
-                    if os.path.exists(os.path.join(img_dir, img_nm)):
-                        os.replace(
-                            os.path.join(img_dir, img_nm),
-                            labels2img(os.path.join(save_dir, str(i) + img_nm)),
-                        )
+            _copy(os.path.join(label_dir, name), os.path.join(save_dir, name))
+            for ext in img_exts:
+                img_nm = name[:-4] + ext
+                _copy(os.path.join(img_dir, img_nm),
+                        labels2img(os.path.join(save_dir, img_nm)))
+            if times > 1:
+                for i in range(times-1):
+                    _copy(os.path.join(save_dir, name), os.path.join(save_dir, str(i)+name))
+                    _copy(labels2img(os.path.join(save_dir, img_nm)),
+                          labels2img(os.path.join(save_dir, str(i)+img_nm)))
 
 def img2labels(img_path, label_ext=".txt", img_exts=[".jpg", ".png"]):
     label_path = img_path.replace("images", "labels")
