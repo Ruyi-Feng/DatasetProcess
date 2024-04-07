@@ -11,12 +11,12 @@ def test_lightchange(path):
 
 def test_cutchange_exteral_label():
     img_cut = ImageCut(
-        ori_sample_dir="G:\samples",
-        obj_class_list=["2"],
-        enlarge_scale=10,
-        external_sample_dir="G:\samples",
+        ori_sample_dir="E:\\yolov5projdataset\\afterbalence",
+        obj_class_list=["2", "3", "1", "4"],
+        enlarge_scale=50,
+        external_sample_dir="E:\\yolov5projdataset\\roadside",
     )
-    img_cut.run(save_path="G:\samples\img_cut", bound_to_obj=10)
+    img_cut.run(save_path="E:\\yolov5projdataset\\img_cut", bound_to_obj=40)
     # changed_num = len(os.listdir("G:\samples\img_cut\images"))
     # assert changed_num == 10
 
