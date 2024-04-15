@@ -198,6 +198,28 @@ def _split(ori_path, new_path, train_list, val_list, test_list=[]):
     print("done split dataset")
 
 def train_val_split(ori_path, new_path, train_ratio=0.7, val_ratio=0.3, test_ratio=0.0):
+    """train_val_split
+
+    ori_path: str
+    --------
+    原始数据集的位置
+
+    new_path: str
+    --------
+    新划分完的数据集的位置
+
+    train_ratio: float
+    -----------
+    训练集比例
+
+    val_ratio: float
+    ---------
+    验证集比例
+
+    test_ratio: float
+    ----------
+    测试集比例
+    """
     ori_img_path = os.path.join(ori_path, "images")
     if not os.path.exists(ori_img_path):
         raise ValueError("not exist path")
