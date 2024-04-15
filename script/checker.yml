@@ -1,0 +1,4 @@
+dir: ""
+fmt: "yolo2xyxy"
+if_check_inside_obj: true
+json_path: ""
