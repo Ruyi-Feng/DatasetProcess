@@ -1,0 +1,5 @@
+ori_path: ""
+new_path: ""
+train_ratio: 0.7
+val_ratio: 0.3
+test_ratio: 0.0

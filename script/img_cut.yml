@@ -1,0 +1,10 @@
+# init
+ori_sample_dir: ""
+obj_class_list: ""
+enlarge_scale: 1
+top_pool_path: ""
+external_sample_dir: ""
+
+# run
+save_path: ""
+bound_to_obj: 40

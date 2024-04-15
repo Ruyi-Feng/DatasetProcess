@@ -1,0 +1,9 @@
+# init
+dir: ""
+light_change_ratio: 0.2
+contrast_change_ratio: 0.2
+brightness_th: 0.8
+contrast_th: 0.5
+
+# run
+save_path: "light_change_img"

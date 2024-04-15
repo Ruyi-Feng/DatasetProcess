@@ -1,4 +1,16 @@
+# init params
 dir: ""
 fmt: "yolo2xyxy"
 if_check_inside_obj: true
 json_path: ""
+
+# check_samples
+if_random: true
+rows: 3
+cols: 3
+save_path: "check_result.json"
+col_pix: 1080
+row_pix: 720
+
+# del_error_samples
+checker_log_path: "check_result.json"
