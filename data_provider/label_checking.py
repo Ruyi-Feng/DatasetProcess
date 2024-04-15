@@ -24,7 +24,8 @@ class Checker:
     """
 
     def __init__(
-        self, dir=None, fmt="yolo2xyxy", if_check_inside_obj=False, json_path=None
+        self, dir=None, fmt="yolo2xyxy", if_check_inside_obj=False, json_path=None,
+        **kwargs
     ):
         """
         Initializes an instance of the class.
@@ -183,7 +184,8 @@ class Checker:
             self.error_images.append(labels2img(self.label_list[index]))
 
     def check_samples(
-        self, if_random=True, rows=3, cols=3, save_path="check_result.json", col_pix=1080, row_pix=720
+        self, if_random=True, rows=3, cols=3, save_path="check_result.json", col_pix=1080, row_pix=720,
+        **kwargs
     ):
         """
         用于检查数据集是否符合要求
@@ -231,6 +233,7 @@ class Balencer(Checker):
         if_check_inside_obj=True,
         dataset_info_json_path=None,
         generate_top_pool=True,
+        **kwargs
     ):
         """
         初始化
@@ -372,6 +375,7 @@ class Balencer(Checker):
         expect_dataset_scale=0.7,
         tolerant_offset=0.1,
         balenced_log_save_path="balence_log.json",
+        **kwargs
     ):
         """
         用于平衡数据集
@@ -405,6 +409,7 @@ class Balencer(Checker):
         save_json(self.samped_dataset, balenced_log_save_path)
 
     def sampling_refer_balenced_log(
-        self, balencer_log_path, save_dir, img_exts=[".jpg", ".png"], label_ext=".txt"
+        self, balencer_log_path, save_dir, img_exts=[".jpg", ".png"], label_ext=".txt",
+        **kwargs
     ):
         sampling(balencer_log_path, self.check_dir, save_dir, img_exts, label_ext)

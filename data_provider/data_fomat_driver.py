@@ -129,7 +129,7 @@ class DataConvert:
                 )
 
     @classmethod
-    def change_label_cls(self, labels_path, ori_cls, new_cls):
+    def change_label_cls(self, labels_path, ori_cls, new_cls, **kwargs):
         label_list = os.listdir(labels_path)
         for label in label_list:
             label_path = os.path.join(labels_path, label)

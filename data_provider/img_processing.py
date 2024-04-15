@@ -15,6 +15,7 @@ class ImageCut:
         enlarge_scale=1,
         top_pool_path=None,
         external_sample_dir=None,
+        **kwargs
     ):
         """
         extend obj class list: []
@@ -138,7 +139,6 @@ class ImageCut:
             return None
 
     def _load_internal_img(self):
-        # halfwork
         aim_cls = self._get_aim_class()
         while True:
             label_name = random.choice(list(self.top_pool[aim_cls].keys()))
@@ -229,7 +229,7 @@ class ImageCut:
         )
         self.data_convert.save(output_dir, save_name, new_img, labels)
 
-    def run(self, save_path="./cut_paste_imgs", bound_to_obj=20):
+    def run(self, save_path="./cut_paste_imgs", bound_to_obj=20, **kwargs):
         """
         需要判断剪贴位置和别的目标iou相交不超过某个阈值
         随机选一个角点，距离原始label和边界有一定距离
@@ -267,6 +267,7 @@ class ImageLight:
         contrast_change_ratio: float = 0.2,
         brightness_th: float = 0.8,
         contrast_th: float = 0.5,
+        **kwargs
     ):
         """
         这里定义
@@ -332,7 +333,7 @@ class ImageLight:
         mark = self.img_list[index] + "_alpha%.2f_beta%.2f" % (alpha, beta)
         return img, mark, labels
 
-    def run(self, save_path=None):
+    def run(self, save_path=None, **kwargs):
         if save_path is None:
             save_path = self.dir
         if not os.path.exists(save_path):

@@ -22,7 +22,6 @@ def test_cutchange_exteral_label():
 
 
 def test_cutchange_internal():
-    pass
     img_cut = ImageCut(
         ori_sample_dir="G:\samples",
         obj_class_list=["2"],
