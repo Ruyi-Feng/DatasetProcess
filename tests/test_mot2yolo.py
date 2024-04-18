@@ -8,9 +8,9 @@ def params():
     parser.add_argument('--save_dir', type=str, default='F:\data\mot2yolo', help='the dir to save dataset')
 
     # MOT dataset params
-    parser.add_argument('--video_path', type=str, default='', )
-    parser.add_argument('--video_mark', type=str, default=None, )
-    parser.add_argument('--csv_path', type=str, default='', )
+    parser.add_argument('--video_path', type=str, default='', help='MOT格式默认图像从video中截取，需要指定视频路径')
+    parser.add_argument('--video_mark', type=str, default=None, help='随机字符，用于区分数据集名称')
+    parser.add_argument('--csv_path', type=str, default='', help="MOT数据的csv文件地址")
 
     # YOLO dataset params
     parser.add_argument('--ori_label_dir', type=str, default='F:\data\samples\labels', )

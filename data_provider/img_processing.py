@@ -11,20 +11,25 @@ class ImageCut:
     def __init__(
         self,
         ori_sample_dir,
-        obj_class_list,
+        obj_class_list=[],
         enlarge_scale=1,
         top_pool_path=None,
         external_sample_dir=None,
         **kwargs
     ):
         """
-        extend obj class list: []
-
-        从这个list里选择可以裁剪剪贴的图像
         剪贴工作模式(按优先级排序)
         1. external_bbox: 按照class分了subdir, 直接找对应box obj的文件路径
+        需要配置external_sample_dir，但其中不应存在labels文件夹，直接包含裁剪的图像。
+
         2. external_label: 如果有label,则在全label筛选。
+        需要配置external_sample_dir，其中存在labels文件夹，用于选取外部需要裁剪的目标。
+        需要配置obj_class_list
+
         3. internal: 依赖top pool
+        需要配置top_pool_path，依赖top_pool进行选取样本。top_pool由balencer生成。
+        需要配置obj_class_list
+
 
         停止条件, enlarge_scale总数多少。
         """
