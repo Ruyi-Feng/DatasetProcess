@@ -5,6 +5,7 @@ import random
 import shutil
 import string
 import cv2
+from data_provider.data_fomat_driver import DataConvert
 
 """
 有一定的筛选率，选择某些帧的图片和label作为training dataset
@@ -105,6 +106,28 @@ class Mot2Yolo:
             self.mark = self.args.video_mark
         self._capture_img(cap, frame_num, select_frm)
         self._capture_labels(select_frm, width, height)
+
+class Visual:
+    def __init__(self, path):
+        self.path = path
+        img_list = os.listdir(os.path.join(path, "images"))
+        self.visual(img_list)
+
+    @staticmethod
+    def _draw_frm(img, label):
+        for i in label:
+            cv2.rectangle(img, (i[1], i[2]), (i[3], i[4]), (255-i[0]*100, i[0]*100, 0), 4)
+        return img
+
+    def visual(self, img_list):
+        for img_nm in img_list:
+            img_path = os.path.join(self.path, "images", img_nm)
+            img = cv2.imread(img_path)
+            label_path = os.path.join(self.path, "labels", img_nm[:-4] + ".txt")
+            labels = DataConvert.load_yolo2xyxy(label_path, img.shape[1], img.shape[0])
+            img = self._draw_frm(img, labels)
+            cv2.imshow("img", img)
+            cv2.waitKey(0)
 
 def visual_yolo(path):
     imgs_path = os.path.join(path, "images")
