@@ -1,4 +1,4 @@
-
+from utils.mot2yolo import Mot2Yolo
 import argparse
 
 
@@ -19,5 +19,8 @@ def params():
     parser.add_argument('--ori_img_dir', type=str, default='', )
     return parser.parse_args()
 
-
+if __name__ == '__main__':
+    args = params()
+    mot2yolo = Mot2Yolo(args)
+    mot2yolo.run()
 
