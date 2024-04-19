@@ -6,13 +6,14 @@ Created on Tue Jun 15 15:30:22 2021
 """
 import cv2
 import os
+import random
 
 global xcut, ycut
-xcut = 3
-ycut = 3
+xcut = 2
+ycut = 2
 
 
-def poscut(bbox, poslist, transpath, labelnm):
+def poscut(bbox, poslist, transpath, labelnm, mark):
     posbox = []
     x = bbox[1]
     y = bbox[2]
@@ -44,24 +45,30 @@ def poscut(bbox, poslist, transpath, labelnm):
                     + "\n"
                 )
                 labelnew = os.path.join(
-                    transpath, "0568_" + str(int(i)) + "_" + str(int(j)) + "_" + labelnm
+                    transpath, mark + str(int(i)) + "_" + str(int(j)) + "_" + labelnm
                 )  # ----------修改名称1
                 with open(labelnew, "a+") as f:
                     f.writelines(posbox)
     return posbox
 
 
-def CropImage4File(oripath, newpath):
+def CropImage4File(oripath, newpath, mark, ratio=1.0):
     global xcut, ycut
     # ------------------------------------------------------------------------------------------------------------修改名称2
     filepath = os.path.join(oripath, "images")
-    destpath = os.path.join(newpath, "images", "train")
     labelpath = os.path.join(oripath, "labels")
-    transpath = os.path.join(newpath, "labels", "train")
+    destpath = os.path.join(newpath, "images")
+    if not os.path.exists(destpath):
+        os.makedirs(destpath)
+    transpath = os.path.join(newpath, "labels")
+    if not os.path.exists(transpath):
+        os.makedirs(transpath)
 
     pathDir = os.listdir(filepath)  # 列出文件路径中的所有路径或文件
     """ """
     for allDir in pathDir:
+        if random.random() > ratio:
+            continue
         poslist = []
         imori = os.path.join(filepath, allDir)  # 打开了图像
         labelnm = allDir.replace("jpg", "txt")
@@ -100,7 +107,7 @@ def CropImage4File(oripath, newpath):
                     cropImg = image[int(y1) : int(y2), int(x1) : int(x2)]
                     poslist.append([i, j, int(x1), int(x2), int(y1), int(y2)])
                     dest = os.path.join(
-                        destpath, "0568_" + str(i) + "_" + str(j) + "_" + allDir
+                        destpath, mark + str(i) + "_" + str(j) + "_" + allDir
                     )  # ----------修改名称3
                     cv2.imwrite(dest, cropImg)
 
@@ -112,7 +119,7 @@ def CropImage4File(oripath, newpath):
                     bbox[3] = bbox[3] * sz2
                     bbox[2] = bbox[2] * sz1
                     bbox[4] = bbox[4] * sz1
-                    labelpos = poscut(bbox, poslist, transpath, labelnm)
+                    labelpos = poscut(bbox, poslist, transpath, labelnm, mark)
                 f.close()
 
 
@@ -121,20 +128,22 @@ if __name__ == "__main__":
     图像的储存格式：example
     -UAV
     --ori
-    ---image
-    ---label
+    ---images
+    ---labels
 
     --new
-    ---image
-    ---label
+    ---images
+    ---labels
     """
 
     filepath = (
-        "E://Traindata//UAV_0568"  # 源图像                     #-----------------修改名称4
+        "E:\\yolov5projdataset\\repair_UAV_dataset\\zhengou"  # 源图像                     #-----------------修改名称4
     )
-    destpath = "E://Traindata//UAV"  # resized images saved here
+    destpath = "E:\\yolov5projdataset\\repair_UAV_dataset\\HC\\zhengou"  # resized images saved here
+    mark = "zhengou"
+    ratio = 0.3    # 有多少比例的图片会被拿来滑窗切割
     # 这个函数是用于滑窗切割
-    CropImage4File(filepath, destpath)
+    CropImage4File(filepath, destpath, mark, ratio)
     """
     #以下部分是可视化框子和图片，检查是否对准使用
     testpath="D://PROGRAM//yolov5traex//UAV//new//labels"
