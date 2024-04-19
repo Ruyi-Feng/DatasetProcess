@@ -100,7 +100,7 @@ def img2labels(img_path, label_ext=".txt", img_exts=[".jpg", ".png"]):
 def labels2img(label_path, label_ext=".txt", img_exts=[".jpg", ".png"]):
     img_path = label_path.replace("labels", "images")
     for ext in img_exts:
-        tmp = label_path[:-4] + ext
+        tmp = img_path[:-4] + ext
         if os.path.exists(tmp):
             img_path = tmp
             break
