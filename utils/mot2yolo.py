@@ -41,9 +41,9 @@ class Mot2Yolo:
         if not os.path.exists(os.path.join(save_dir, "labels")):
             os.makedirs(os.path.join(save_dir, "labels"))
         for i in select_list:
-            _copy(os.path.join(ori_img_dir, i[:-4] + ".jpg"), os.path.join(save_dir, "images", i[:-4] + ".jpg"))
-            _copy(os.path.join(ori_img_dir, i[:-4] + ".png"), os.path.join(save_dir, "images", i[:-4] + ".png"))
-            _copy(os.path.join(ori_label_dir, i), os.path.join(save_dir, "labels", i))
+            _copy(os.path.join(ori_img_dir, i[:-4] + ".jpg"), os.path.join(save_dir, "images", self.video_mark + i[:-4] + ".jpg"))
+            _copy(os.path.join(ori_img_dir, i[:-4] + ".png"), os.path.join(save_dir, "images", self.video_mark + i[:-4] + ".png"))
+            _copy(os.path.join(ori_label_dir, i), os.path.join(save_dir, "labels", self.video_mark + i))
 
     def _run_yolo(self):
         obj_list = os.listdir(self.args.ori_label_dir)
@@ -135,8 +135,9 @@ class Visual:
             label_path = os.path.join(self.path, "labels", img_nm[:-4] + ".txt")
             labels = DataConvert.load_yolo2xyxy(label_path, img.shape[1], img.shape[0])
             img = self._draw_frm(img, labels)
-            cv2.imshow("img", img)
-            cv2.waitKey(0)
+            cv2.imwrite(os.path.join(self.path, "ref", img_nm), img)
+            # cv2.imshow("img", img)
+            # cv2.waitKey(0)
 
 def visual_yolo(path):
     imgs_path = os.path.join(path, "images")
