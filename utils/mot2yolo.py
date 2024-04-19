@@ -41,9 +41,9 @@ class Mot2Yolo:
         if not os.path.exists(os.path.join(save_dir, "labels")):
             os.makedirs(os.path.join(save_dir, "labels"))
         for i in select_list:
-            _copy(os.path.join(ori_img_dir, i[:-4] + ".jpg"), os.path.join(save_dir, "images", self.video_mark + i[:-4] + ".jpg"))
-            _copy(os.path.join(ori_img_dir, i[:-4] + ".png"), os.path.join(save_dir, "images", self.video_mark + i[:-4] + ".png"))
-            _copy(os.path.join(ori_label_dir, i), os.path.join(save_dir, "labels", self.video_mark + i))
+            _copy(os.path.join(ori_img_dir, i[:-4] + ".jpg"), os.path.join(save_dir, "images", self.args.video_mark + i[:-4] + ".jpg"))
+            _copy(os.path.join(ori_img_dir, i[:-4] + ".png"), os.path.join(save_dir, "images", self.args.video_mark + i[:-4] + ".png"))
+            _copy(os.path.join(ori_label_dir, i), os.path.join(save_dir, "labels", self.args.video_mark + i))
 
     def _run_yolo(self):
         obj_list = os.listdir(self.args.ori_label_dir)
