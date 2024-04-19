@@ -30,8 +30,8 @@ if __name__ == "__main__":
     # test_cutchange_exteral_label()
     # test_cutchange_exteral_bbox()
     # test_cutchange_internal()
-    # test_mot2yolo()
+    test_mot2yolo()
     end_time = time.time()
     print("time:", end_time - start_time)
 
-    Visual("F:\data\mot2yolo")
+    # Visual("E:\\yolov5projdataset\\repair_UAV_dataset\\kzm9")

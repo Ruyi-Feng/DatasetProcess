@@ -6,6 +6,7 @@ import shutil
 import string
 import cv2
 from data_provider.data_fomat_driver import DataConvert
+from data_provider.utils import save_json, load_json
 
 """
 有一定的筛选率，选择某些帧的图片和label作为training dataset
@@ -55,18 +56,18 @@ class Mot2Yolo:
         save_dir = self.args.save_dir
         if not os.path.exists(os.path.join(save_dir, "images")):
             os.makedirs(os.path.join(save_dir, "images"))
-        for i in range(len(frame_num)):
+        for i in range(int(frame_num)):
             ret, frame = cap.read()
             if ret and (i in select_frm):
                 cv2.imwrite(os.path.join(save_dir, "images", self.mark + str(i) + ".jpg"), frame)
 
     def _mot2yolo(self, labels, width, height):
         # 因为mot没有cls，所以默认是0
-        yolo = np.zeros_like(labels)
-        yolo[:, 1] = (labels[3] + labels[5] / 2.0) / width
-        yolo[:, 2] = (labels[4] + labels[6] / 2.0) / height
-        yolo[:, 3] = labels[5] / width
-        yolo[:, 4] = labels[6] / height
+        yolo = np.zeros((len(labels), 5))
+        yolo[:, 1] = (labels[:, 2] + labels[:, 4] / 2.0) / width
+        yolo[:, 2] = (labels[:, 3] + labels[:, 5] / 2.0) / height
+        yolo[:, 3] = labels[:, 4] / width
+        yolo[:, 4] = labels[:, 5] / height
         np.around(yolo, decimals=6, out=yolo)
         return yolo
 
@@ -76,7 +77,7 @@ class Mot2Yolo:
             os.makedirs(os.path.join(save_dir, "labels"))
         with open(os.path.join(save_dir, "labels", self.mark + str(frm) + ".txt"), "w") as f:
             for i in labels:
-                f.write("{} {} {} {} {}\n".format(i[0], i[1], i[2], i[3], i[4]))
+                f.write("{} {} {} {} {}\n".format(int(i[0]), i[1], i[2], i[3], i[4]))
 
     def _select_mot_labels(self, mot_labels, select_frm, width, height):
         for i in select_frm:
@@ -94,12 +95,20 @@ class Mot2Yolo:
 
         self._select_mot_labels(mot_labels, select_frm, width, height)
 
+    def _save_tmp_select_frm(self, select_frm):
+        selected_json = {"selected": select_frm}
+        save_json(selected_json, "./selected_frms.json")
+
     def _run_mot(self):
         cap = cv2.VideoCapture(self.args.video_path)
         frame_num = cap.get(7)
         width = cap.get(3)
         height = cap.get(4)
-        select_frm = random.sample(range(0, int(frame_num)), int(frame_num * self.args.ratio))
+        if not os.path.exists("./selected_frms.json"):
+            select_frm = random.sample(range(0, int(frame_num)), int(frame_num * self.args.ratio))
+            self._save_tmp_select_frm(select_frm)
+        else:
+            select_frm = load_json("./selected_frms.json")["selected"]
         if self.args.video_mark is None:
             self.mark = random_string()
         else:
