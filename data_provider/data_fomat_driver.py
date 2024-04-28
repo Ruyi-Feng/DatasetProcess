@@ -95,7 +95,7 @@ class DataConvert:
         with open(new_label_path, "w") as f:
             for label in labels:
                 f.write(
-                    "{:.0f} {:.6f} {:.6f} {:.6f} {:.6f}\n".format(
+                    "{} {:.6f} {:.6f} {:.6f} {:.6f}\n".format(
                         label[0], label[1], label[2], label[3], label[4]
                     )
                 )
