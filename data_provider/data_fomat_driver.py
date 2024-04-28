@@ -55,10 +55,14 @@ class DataConvert:
     @staticmethod
     def xyxy2yolo(labels, img_w, img_h):
         for label in labels:
-            label[1] = (label[1] + label[3]) / 2 / img_w
-            label[2] = (label[2] + label[4]) / 2 / img_h
-            label[3] = (label[3] - label[1]) / img_w
-            label[4] = (label[4] - label[2]) / img_h
+            w = label[3] - label[1]
+            h = label[4] - label[2]
+            cx = (label[1] + label[3]) / 2
+            cy = (label[2] + label[4]) / 2
+            label[1] = cx / img_w
+            label[2] = cy / img_h
+            label[3] = w / img_w
+            label[4] = h / img_h
         return labels
 
     @staticmethod
@@ -91,7 +95,7 @@ class DataConvert:
         with open(new_label_path, "w") as f:
             for label in labels:
                 f.write(
-                    "{} {} {} {} {}\n".format(
+                    "{:.0f} {:.6f} {:.6f} {:.6f} {:.6f}\n".format(
                         label[0], label[1], label[2], label[3], label[4]
                     )
                 )
