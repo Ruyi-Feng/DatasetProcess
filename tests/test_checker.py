@@ -28,6 +28,10 @@ def test_change_label_cls():
                                  ori_cls=1,
                                  new_cls=3)
 
+def test_del_aim_cls():
+    DataConvert.del_aim_cls(labels_path="J:\\yolov5projdataset\\Yolo Truck.v2i.yolov5pytorch\\train\\labels",
+                            del_cls=[])
+
 def test_train_val_split():
     train_val_split(ori_path="E:\\yolov5projdataset\\afterbalence",
                     new_path="E:\\yolov5projdataset\\split_dataset",

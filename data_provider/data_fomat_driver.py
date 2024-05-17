@@ -141,3 +141,22 @@ class DataConvert:
             labels = self.replace_cls(labels, ori_cls, new_cls)
             self.freash_yolo_labels(label_path, labels)
         print("done")
+
+    @staticmethod
+    def del_cls(labels, del_cls):
+        new_labels = []
+        for i in range(len(labels)):
+            if labels[i][0] in del_cls:
+                continue
+            new_labels.append(labels[i])
+        return new_labels
+
+    @classmethod
+    def del_aim_cls(self, labels_path, del_cls, **kwargs):
+        label_list = os.listdir(labels_path)
+        for label in label_list:
+            label_path = os.path.join(labels_path, label)
+            labels = self.load_yolo(label_path)
+            labels = self.del_cls(labels, del_cls)
+            self.freash_yolo_labels(label_path, labels)
+        print("done")

@@ -4,6 +4,7 @@ from tests.test_checker import (
     test_euqal_img_labels,
     test_change_label_cls,
     test_train_val_split,
+    test_del_aim_cls,
 )
 from tests.test_lightchange import (
     test_lightchange,
@@ -22,6 +23,7 @@ if __name__ == "__main__":
     # path = "/data1/fry/dealdataset/"
     start_time = time.time()
     # test_euqal_img_labels(path)
+    test_del_aim_cls()
     # test_train_val_split()
     # test_change_label_cls()
     # test_checker(path)
