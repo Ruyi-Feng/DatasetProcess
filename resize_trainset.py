@@ -7,7 +7,7 @@ import numpy as np
 
 class ResizeTrainset:
 
-    def __init__(self, ori_path, new_path, resize_limit, ratio=1.0):
+    def __init__(self, ori_path, new_path, resize_limit, ratio=1.0, target_cls=[], mark=""):
         if os.path.exists(ori_path):
             self.img_path = os.path.join(ori_path, "images")
             self.label_path = os.path.join(ori_path, "labels")
@@ -19,6 +19,12 @@ class ResizeTrainset:
         self.new_path = new_path
         self.resize_limit = min(resize_limit, 100)  # resize_limit
         self.ratio = ratio
+        self.mark = mark
+        if len(target_cls):
+            self.select_cls = True
+            self.target_cls = target_cls
+        else:
+            self.select_cls = False
         self._run()
 
     def _load_one_img_with_label(self, img_nm):
@@ -47,14 +53,28 @@ class ResizeTrainset:
 
     def _save_new_img_and_labels(self, img, labels, img_nm):
         labels = DataConvert.xyxy2yolo(labels, img.shape[1], img.shape[0])
-        new_img_nm = img_nm[:-4] + "_resize" + img_nm[-4:]
+        new_img_nm = self.mark + img_nm[:-4] + "_resize" + img_nm[-4:]
         DataConvert.save_yolo(self.new_path, new_img_nm, img, labels)
+
+    def _check_labels_with_target_cls(self, label):
+        if not self.select_cls:
+            return True
+        obj_cls = []
+        valid = False
+        [obj_cls.append(i[0]) for i in label]
+        for aim_cls in self.target_cls:
+            if aim_cls in obj_cls:
+                valid = True
+                break
+        return valid
 
     def _run(self):
         img_list = os.listdir(self.img_path)
         sample_list = random.sample(img_list, int(len(img_list) * self.ratio))
         for img_nm in sample_list:
             img, label = self._load_one_img_with_label(img_nm)
+            if not self._check_labels_with_target_cls(label):
+                continue
             img, label = self._resize_img(img, label)
             self._save_new_img_and_labels(img, label, img_nm)
 
@@ -64,4 +84,4 @@ if __name__ == "__main__":
     new_path = "f:/data/resized"
     resize_limit = 80
     ratio = 1
-    ResizeTrainset(ori_path, new_path, resize_limit, ratio)
+    ResizeTrainset(ori_path, new_path, resize_limit, ratio, target_cls=[], mark="")
