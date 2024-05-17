@@ -59,5 +59,5 @@ def process_folder(root_folder):
 
 
 if __name__ == '__main__':
-    root_folder = "E:\\补充truck\\sample"
+    root_folder = "/aim_dataset/"
     process_folder(root_folder)
