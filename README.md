@@ -316,7 +316,7 @@ checker_log_path: "check_result.json"
 
 ```shell
 # 从 main_chekcer 启动
-python main_checker.py --change_label_cls --script_dir ./script
+python main_checker.py --checker --use_img_visual_checking --script_dir ./script
 ```
 
 查看结果：结果会储存在DataProcess下的check_result.json里。可以直接
@@ -482,6 +482,12 @@ external_sample_dir: ""  # 外部数据集的地址，采用任何一种外部�
 save_path: ""  # 裁剪后的数据集存储位置
 bound_to_obj: 40  # 裁剪过程距离原始目标和边缘的像素距离
 
+```
+
+### 启动命令
+```shell
+# 从 main_chekcer 启动
+python main_checker.py --train_val_split --script_dir ./script
 ```
 
 ### 拆分测试
